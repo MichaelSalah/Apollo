@@ -1,0 +1,8 @@
+linear_speed: 0.1
+fork_increment: 0.05
+fork_levels: [0.03, 0.25]
+retreat_distance: 0.3
+stop_distance: 0.08
+fork_error_tolerance: 0.008
+time_delay: 1
+failure_time: 20

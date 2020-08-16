@@ -1,0 +1,16 @@
+recovery_behaviors:  [{name: conservative_reset, type: clear_costmap_recovery/ClearCostmapRecovery},
+                      {name: move_slow, type: move_slow_and_clear/MoveSlowAndClear},
+                      {name: apollo_recovery, type: apollo_recovery/RotateRecovery},
+                      {name: aggressive_reset, type: clear_costmap_recovery/ClearCostmapRecovery}]
+base_global_planner: "global_planner/GlobalPlanner"
+base_local_planner: "dwa_local_planner/DWAPlannerROS"
+controller_frequency: 5
+planner_frequency: 0.2
+
+GlobalPlanner:
+  use_dijkstra: true
+  default_tolerance: 0.0
+  publish_potential: true
+  lethal_cost: 253
+  neutral_cost: 66
+  cost_factor: 0.55

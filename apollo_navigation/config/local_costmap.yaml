@@ -1,0 +1,44 @@
+local_costmap:
+  global_frame: "map"
+  rolling_window: true
+  static_map: false
+  width: 4
+  height: 4
+  resolution: 0.015625
+  robot_base_frame: "base_link"
+  update_frequency: 5.0
+  publish_frequency: 1.0
+  transform_tolerance: 0.5
+
+  footprint: [[0.2475, 0.150], [0.2475, -0.150], [-0.2475, -0.150], [-0.2475, 0.150]]
+  footprint_padding: 0.02
+
+  plugins:
+    - {name: "static_map", type: "costmap_2d::StaticLayer"}
+    - {name: "inflation_map_static", type: "costmap_2d::InflationLayer"}
+    - {name: "obstacle_map", type: "costmap_2d::ObstacleLayer"}
+    - {name: "ultrasonic_map", type: "range_sensor_layer::RangeSensorLayer"}
+    - {name: "inflation_map", type: "costmap_2d::InflationLayer"}
+
+  static_map:
+      lethal_cost_threshold: 100
+      map_topic: map
+      first_map_only: false
+
+  inflation_map_static:
+      inflation_radius: 0.2 # was 1.75
+      cost_scaling_factor: 2.58
+
+
+  obstacle_map:
+    observation_sources: "kinect_scan"
+    kinect_scan: {topic: "scan", sensor_frame: "kinect_link", data_type: "LaserScan", clearing: true, marking: true, obstacle_range: 3.8, raytrace_range: 4.1, inf_is_valid: true}
+    track_unknown_space: true
+
+  ultrasonic_map:
+    topics: ["/rear_ultrasonic", "/front_ultrasonic"]
+    clear_on_max_reading: true
+
+  inflation_map:
+    inflation_radius: 0.2 # was 1.75
+    cost_scaling_factor: 2.58 # default was 10

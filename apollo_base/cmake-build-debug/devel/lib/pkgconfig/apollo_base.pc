@@ -1,0 +1,8 @@
+prefix=/home/joe/test_ws/src/apollo_base/cmake-build-debug/devel
+
+Name: apollo_base
+Description: Description of apollo_base
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/joe/test_ws/src/apollo_base/cmake-build-debug/devel/lib 
+Requires: 

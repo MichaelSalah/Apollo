@@ -1,0 +1,16 @@
+<launch>
+  <include file="$(find apollo_description)/launch/robot_description.launch"/>
+  <node name = "rsp" pkg = "robot_state_publisher" type ="robot_state_publisher"/>
+  <rosparam command="load" file="$(find apollo_control)/config/control.yaml"/>
+  <node name = "controller_manager" pkg = "controller_manager" type = "spawner" args = "fork_position_controller apollo_joint_publisher apollo_velocity_controller"/>
+  <node pkg="robot_localization" type="ukf_localization_node" name="ekf_localization" output="screen" args="/odometry/filtered:=/odometry/filtered_cont"/>
+  <node pkg="robot_localization" type="ukf_localization_node" name="global_localization" output="screen"/>
+  <node pkg="imu_filter_madgwick" type="imu_filter_node" name="madgwick"/>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="imu_trans" args="0 0 0 0 0 0 1 base_link imu_link"/>
+  <node pkg="mag_cal" type="imu_time.py" name="imu_time"/>
+  <node pkg="mag_cal" type="calibrated_mag.py" name="calibrated_magnetometer"/>
+  <!--<node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="di2ls" args="_range_max:=4.0 _range_min:=0.8 image:=/kinect/depth/image_raw _output_frame_id:=kinect_link"/>-->
+  <!--<node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pc2ls" args="_range_min:=0.8 _range_max:=4.0 _target_frame:=kinect_link _use_inf:=true cloud_in:=/kinect/depth/points _scan_time:=1.0/60.0 _max_height:=0.5 _angle_min:=${-30 * pi / 180.0} _angle_max:=${30 * pi / 180.0}"/>-->
+  <node pkg="apollo_control" type="indoor_localization.py" name="rfid_tags"/>
+  <!--<include file="$(find apollo_control)/launch/teleop.launch"/>-->
+</launch>

@@ -1,0 +1,10 @@
+teleop:
+  linear_x_speed_limit: 0.80
+  linear_x_speed_step: 0.05
+  linear_y_speed_limit: 0.50
+  linear_y_speed_step: 0.05
+  angular_speed_limit: 2.0
+  angular_speed_step: 0.2
+  left_stick_deadzone: 0.05
+  right_stick_deadzone: 0.05
+  fork_states: [0.0, 0.08, 0.09, 0.1, 0.15, 0.2, 0.3]

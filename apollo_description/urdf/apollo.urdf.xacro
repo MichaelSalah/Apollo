@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="apollo">
+  <xacro:include filename="$(find apollo_description)/urdf/wheel.urdf.xacro"/>
+  <xacro:include filename="$(find apollo_description)/urdf/accessories.urdf.xacro"/>
+  <link name="base_link">
+      <visual>
+          <geometry>
+            <mesh filename="package://apollo_description/meshes/base_link.stl"/>
+          </geometry>
+          <origin xyz="0 0 0"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0.05" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.49492 0.300 0.09625"/>
+        </geometry>
+      </collision>
+  </link>
+  <link name="inertial_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <mass value="20.0"/>
+      <inertia ixx="0.16544" ixy="0" ixz="0.0" iyy="0.42368" iyz="0" izz="0.5582"/>
+    </inertial>
+  </link>
+  <joint name="inertial" type="fixed">
+    <parent link="base_link"/>
+    <child link="inertial_link"/>
+  </joint>
+  <xacro:ultrasonic name="rear" xyz="${-0.49492/2} 0 0" rpy="0 0 ${radians(180)}"/>
+  <xacro:ultrasonic name="front" xyz="${0.49492/2} 0 0" rpy="0 0 0"/>
+  <xacro:wheel wheel="fl" x_dir="0.14034" y_dir="0.1185"/>
+  <xacro:wheel wheel="fr" x_dir="0.14034" y_dir="-0.1185"/>
+  <xacro:wheel wheel="rl" x_dir="-0.14034" y_dir="0.1185"/>
+  <xacro:wheel wheel="rr" x_dir="-0.14034" y_dir="-0.1185"/>
+  <xacro:kinect/>
+  <xacro:fork_base/>
+  <link name="imu_link"/>
+  <joint name="imu_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 ${radians(0.0)}"/>
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+  </joint>
+  <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"/>
+  </gazebo>
+  <gazebo>
+    <plugin name="ridgeback_ros_force_based_move" filename="libridgeback_ros_force_based_move.so">
+      <robotNamespace>/</robotNamespace>
+      <commandTopic>apollo_velocity_controller/cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <odometryRate>50.0</odometryRate>
+      <robotBaseFrame>base_link</robotBaseFrame>
+      <cmdVelTimeOut>0.25</cmdVelTimeOut>
+      <!-- Don't publish a transform: the controller does it. -->
+      <publishOdometryTf>0</publishOdometryTf>
+      <yaw_velocity_p_gain>500.0</yaw_velocity_p_gain>
+      <x_velocity_p_gain>10000.0</x_velocity_p_gain>
+      <y_velocity_p_gain>10000.0</y_velocity_p_gain>
+    </plugin>
+    <plugin name="imu_controller" filename="libhector_gazebo_ros_imu.so">
+      <robotNamespace>/</robotNamespace>
+      <updateRate>50.0</updateRate>
+      <bodyName>imu_link</bodyName>
+      <topicName>imu/data_raw</topicName>
+      <accelDrift>0.0 0.0 0.0</accelDrift>
+      <accelGaussianNoise>1e-5 1e-5 0.0</accelGaussianNoise>
+      <rateDrift>0.0 0.0 0.0</rateDrift>
+      <rateGaussianNoise>1e-9 1e-9 1e-9</rateGaussianNoise>
+      <headingDrift>0.0</headingDrift>
+      <headingGaussianNoise>1e-10</headingGaussianNoise>
+    </plugin>
+    <plugin name="mag_controller" filename="libhector_gazebo_ros_magnetic.so">
+      <robotNamespace>/</robotNamespace>
+      <updateRate>50.0</updateRate>
+      <bodyName>imu_link</bodyName>
+      <topicName>imu/mag_raw</topicName>
+      <declination>4.566667</declination>
+      <inclination>44.733333</inclination>
+      <referenceHeading>0.0</referenceHeading>
+      <magnitude>4.37559e-5</magnitude>
+      <gaussianNoise>0.0000000001 0.0000000001 0.0000000001</gaussianNoise>
+      <offset>1e-5 3e-6 0.0</offset>
+      <drift>0.0 0.0 0.0</drift>
+      <driftFrequency>0.0 0.0 0.0</driftFrequency>
+    </plugin>
+  </gazebo>
+</robot>

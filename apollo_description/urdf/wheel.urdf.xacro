@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="wheel">
+<xacro:macro name="wheel" params="wheel x_dir y_dir">
+  <link name ="${wheel}_wheel">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.041913"/>
+      <inertia ixx="1.2186E-5" ixy="0.0" ixz="0.0" iyy="1.62E-5" iyz="0.0" izz="1.2186E-5"/>
+    </inertial>
+      <visual>
+          <geometry>
+              <mesh filename="package://apollo_description/meshes/wheel.stl"/>
+          </geometry>
+          <origin xyz ="0 0 0" rpy ="0 0 1.5707963268"/>
+          <material name="wheel_material">
+            <color rgba="0.75294 0.75294 0.75294 1"/>
+          </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0"  rpy="1.5707963268 0 0"/>
+        <geometry>
+          <cylinder radius="0.03" length="0.031"/>
+        </geometry>
+      </collision>
+  </link>
+  <joint name="${wheel}_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="${wheel}_wheel"/>
+      <origin xyz="${x_dir} ${y_dir} 0.001" rpy = "0 0 0"/>
+      <axis xyz="0 1 0"/>
+  </joint>
+  <transmission name="${wheel}_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${wheel}_joint">
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${wheel}_motor"/>
+  </transmission>
+  <gazebo reference="${wheel}_wheel">
+      <mu1 value="0.0"/>
+      <mu2 value="0.0"/>
+      <!--<kp value="100000.0"/>
+      <kd value="1.0" />
+      <fdir1 value="1 0 0"/>-->
+  </gazebo>
+</xacro:macro>
+</robot>

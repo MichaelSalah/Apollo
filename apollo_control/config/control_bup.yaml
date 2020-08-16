@@ -1,0 +1,129 @@
+apollo_joint_publisher:
+  type: "joint_state_controller/JointStateController"
+  publish_rate: 50
+
+apollo_velocity_controller:
+  type: "mecanum_drive_controller/MecanumDriveController"
+  front_left_wheel_joint: "fl_joint"
+  back_left_wheel_joint: "rl_joint"
+  front_right_wheel_joint: "fr_joint"
+  back_right_wheel_joint: "rr_joint"
+  publish_rate: 20
+  pose_covariance_diagonal: [1.0e-5, 1.0e-5, 500.0, 500.0, 500.0, 0.00000001]
+  twist_covariance_diagonal: [7.706533752020519e-12, 2.231723965932936e-12, 500.0, 500.0, 500.0, 1.5500433635182198e-09] #I have deflated the values of X' and Y' by 10
+  cmd_vel_timeout: 0.25
+  #true twist variances are [7.706533752020519e-11, 2.231723965932936e-11, 1.5500433635182198e-09]
+  wheel_separation_x: 0.238
+  wheel_separation_y: 0.275
+
+  # Odometry fused with IMU is published by robot_localization, so
+  # no need to publish a TF based on encoders alone.
+  enable_odom_tf: false
+
+  # Wheel separation and radius multipliers
+  wheel_separation_multiplier: 1.0 # default: 1.0
+  wheel_radius_multiplier    : 1.0 # default: 1.0
+
+  # Velocity and acceleration limits
+  # Whenever a min_* is unspecified, default to -max_*
+  linear:
+    x:
+      has_velocity_limits    : true
+      max_velocity           : 0.8   # m/s
+      has_acceleration_limits: true
+      max_acceleration       : 50.0  # m/s^2
+    y:
+      has_velocity_limits    : true
+      max_velocity           : 0.5   # m/s
+      has_acceleration_limits: true
+      max_acceleration       : 50.0  # m/s^2
+  angular:
+    z:
+      has_velocity_limits    : true
+      max_velocity           : 2.0   # rad/s
+      has_acceleration_limits: true
+      max_acceleration       : 50.0   # rad/s^2
+
+madgwick:
+  use_mag: true
+  use_magnetic_field_msg: true
+  gain: 0.005
+  zeta: 0.0
+  publish_tf: false
+  mag_bias_x: 0
+  mag_bias_y: 0
+  mag_bias_z: 0
+
+ekf_localization:
+  map_frame: map
+  odom_frame: odom
+  base_link_frame: base_link
+  world_frame: odom
+
+  two_d_mode: true
+
+  frequency: 50
+
+  odom0: apollo_velocity_controller/odom
+  odom0_config: [false, false, false,
+                 false, false, false,
+                 true, true, false,
+                 false, false, true,
+                 false, false, false]
+  odom0_relative: true
+  odom0_queue_size: 10
+
+  imu0: imu/data
+  imu0_config: [false, false, false,
+                false, false, false,
+                false, false, false,
+                false, false, true,
+                true, true, false]
+  imu0_relative: false
+  imu0_remove_gravitational_acceleration: true
+  gravitational_acceleration: 9.79999999907
+  imu0_queue_size: 10
+
+  initial_state: [0.0,  0.0,  0.0,
+                  0.0,  0.0,  0.0,
+                  0.0,  0.0,  0.0,
+                  0.0,  0.0,  0.0,
+                  0.0,  0.0,  0.0]
+
+  initial_estimate_covariance: [1e-6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                0, 1e-6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                0, 0, 1e-6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                0, 0, 0, 1e-6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                0, 0, 0, 0, 1e-6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                0, 0, 0, 0, 0, 1e-6, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                0, 0, 0, 0, 0, 0, 1e-2, 0, 0, 0, 0, 0, 0, 0, 0,
+                                0, 0, 0, 0, 0, 0, 0, 1e-2, 0, 0, 0, 0, 0, 0, 0,
+                                0, 0, 0, 0, 0, 0, 0, 0, 1e-6, 0, 0, 0, 0, 0, 0,
+                                0, 0, 0, 0, 0, 0, 0, 0, 0, 1e-6, 0, 0, 0, 0, 0,
+                                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1e-6, 0, 0, 0, 0,
+                                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1e-2, 0, 0, 0,
+                                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1e-3, 0, 0,
+                                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1e-3, 0,
+                                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1e-6]
+
+  process_noise_covariance: [1e-7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                               0, 1e-7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                               0, 0, 1e-3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                               0, 0, 0, 1e-3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                               0, 0, 0, 0, 1e-3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                               0, 0, 0, 0, 0, 1e-7, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                               0, 0, 0, 0, 0, 0, 1e-5, 0, 0, 0, 0, 0, 0, 0, 0,
+                               0, 0, 0, 0, 0, 0, 0, 1e-5, 0, 0, 0, 0, 0, 0, 0,
+                               0, 0, 0, 0, 0, 0, 0, 0, 1e-3, 0, 0, 0, 0, 0, 0,
+                               0, 0, 0, 0, 0, 0, 0, 0, 0, 1e-3, 0, 0, 0, 0, 0,
+                               0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1e-3, 0, 0, 0, 0,
+                               0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1e-6, 0, 0, 0,
+                               0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1e-6, 0, 0,
+                               0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1e-6, 0,
+                               0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1e-3]
+
+  dynamic_process_noise_covariance: true
+  print_diagnostics: true
+  publish_acceleration: true
+  debug: false
+  debug_out_file: "/home/joe/imu.log"

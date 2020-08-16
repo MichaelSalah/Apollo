@@ -1,0 +1,63 @@
+Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
+Change Dir: /home/joe/test_ws/src/apollo_base/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_28df6/fast && /usr/bin/make -f CMakeFiles/cmTC_28df6.dir/build.make CMakeFiles/cmTC_28df6.dir/build
+make[1]: Entering directory '/home/joe/test_ws/src/apollo_base/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_28df6.dir/src.c.o
+/usr/bin/cc   -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_28df6.dir/src.c.o   -c /home/joe/test_ws/src/apollo_base/cmake-build-debug/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_28df6
+/home/joe/Desktop/clion-2020.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_28df6.dir/link.txt --verbose=1
+/usr/bin/cc  -DCMAKE_HAVE_LIBC_PTHREAD    -rdynamic CMakeFiles/cmTC_28df6.dir/src.c.o  -o cmTC_28df6 
+CMakeFiles/cmTC_28df6.dir/src.c.o: In function `main':
+src.c:(.text+0x3e): undefined reference to `pthread_create'
+src.c:(.text+0x4a): undefined reference to `pthread_detach'
+src.c:(.text+0x5b): undefined reference to `pthread_join'
+src.c:(.text+0x6f): undefined reference to `pthread_atfork'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_28df6.dir/build.make:86: recipe for target 'cmTC_28df6' failed
+make[1]: *** [cmTC_28df6] Error 1
+make[1]: Leaving directory '/home/joe/test_ws/src/apollo_base/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:121: recipe for target 'cmTC_28df6/fast' failed
+make: *** [cmTC_28df6/fast] Error 2
+
+
+Source file was:
+#include <pthread.h>
+
+void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/joe/test_ws/src/apollo_base/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_c6ac7/fast && /usr/bin/make -f CMakeFiles/cmTC_c6ac7.dir/build.make CMakeFiles/cmTC_c6ac7.dir/build
+make[1]: Entering directory '/home/joe/test_ws/src/apollo_base/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_c6ac7.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_c6ac7.dir/CheckFunctionExists.c.o   -c /home/joe/Desktop/clion-2020.1.2/bin/cmake/linux/share/cmake-3.16/Modules/CheckFunctionExists.c
+Linking C executable cmTC_c6ac7
+/home/joe/Desktop/clion-2020.1.2/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c6ac7.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_c6ac7.dir/CheckFunctionExists.c.o  -o cmTC_c6ac7  -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_c6ac7.dir/build.make:86: recipe for target 'cmTC_c6ac7' failed
+make[1]: *** [cmTC_c6ac7] Error 1
+make[1]: Leaving directory '/home/joe/test_ws/src/apollo_base/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:121: recipe for target 'cmTC_c6ac7/fast' failed
+make: *** [cmTC_c6ac7/fast] Error 2
+
+
+

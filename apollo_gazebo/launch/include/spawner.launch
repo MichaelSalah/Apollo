@@ -1,0 +1,16 @@
+<launch>
+    <arg name="x" default="0.0"/>
+    <arg name="y" default="0.0"/>
+    <arg name="z" default="0.5"/>
+    <arg name="yaw" default="0.0"/>
+    <node name="robot_spawn" pkg="gazebo_ros" type="spawn_model" args="
+      -urdf
+      -param robot_description
+      -model apollo
+      -x $(arg x)
+      -y $(arg y)
+      -z $(arg z)
+      -Y $(arg yaw)
+      -unpause
+      "/>
+</launch>

@@ -1,0 +1,7 @@
+<launch>
+  <include file="$(find apollo_gazebo)/launch/apollo_maze.launch"/>
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find apollo_rviz)/config/maze.rviz"/>
+  <include file="$(find apollo_navigation)/launch/move_base.launch">
+    <arg name="map" value="maze"/>
+  </include>
+</launch>

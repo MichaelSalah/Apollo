@@ -1,0 +1,17 @@
+topics:
+  -
+    name: manual_teleop
+    topic: manual_teleop/cmd_vel
+    timeout: 0.5
+    priority: 50
+  -
+    name: move_base
+    topic: move_base/cmd_vel
+    timeout: 0.5
+    priority: 95
+locks:
+  -
+    name: emergency
+    topic: emergency
+    timeout: 0.0
+    priority: 255

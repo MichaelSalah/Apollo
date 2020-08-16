@@ -1,0 +1,7 @@
+<library path="devel/lib/libapollo_recovery">
+  <class name="apollo_recovery/RotateRecovery" type="apollo_recovery::RotateRecovery" base_class_type="nav_core::RecoveryBehavior">
+    <description>
+      A recovery behavior that performs a 360 degree in-place rotation to attempt to clear out space ISA.
+    </description>
+  </class>
+</library>

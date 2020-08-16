@@ -1,0 +1,7 @@
+<launch>
+  <include file="$(find apollo_gazebo)/launch/apollo_warehouse.launch"/>
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find apollo_rviz)/config/warehouse.rviz"/>
+  <include file="$(find apollo_navigation)/launch/move_base.launch">
+    <arg name="map" value="warehouse"/>
+  </include>
+</launch>

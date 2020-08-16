@@ -1,0 +1,23 @@
+<launch>
+ <arg name="map" default="map"/>
+ <node pkg="move_base" type="move_base" name="move_base" output="screen">
+  <!--<rosparam file="$(find ridgeback_navigation)/params/costmap_common_params.yaml" command="load" ns="global_costmap" />-->
+  <!--<rosparam file="$(find ridgeback_navigation)/params/costmap_common_params.yaml" command="load" ns="local_costmap" />>-->
+
+  <rosparam file="$(find apollo_navigation)/config/global_costmap.yaml" command="load" />
+  <rosparam file="$(find apollo_navigation)/config/local_costmap.yaml" command="load" />
+  <rosparam file="$(find apollo_navigation)/config/move_base.yaml" command="load" />
+  <rosparam file="$(find apollo_navigation)/config/base_local_planner.yaml" command="load" />
+  <rosparam file="$(find apollo_navigation)/config/state_machine.yaml" command="load" />
+  <!--<rosparam file="$(find ridgeback_navigation)/params/base_local_planner_params.yaml" command="load" />>-->
+  <!--<rosparam file="$(find ridgeback_navigation)/params/move_base_params.yaml" command="load" />>-->
+
+  <!--<param name="base_global_planner" type="string" value="navfn/NavfnROS" />>-->
+  <!--<param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>-->
+
+  <remap from="odom" to="odometry/filtered" />
+  <remap from="cmd_vel" to="move_base/cmd_vel"/>
+ </node>
+ <node pkg="map_server" type="map_server" name="map_server" args="$(find apollo_navigation)/map/$(arg map).yaml"/>
+ <!--<node pkg="tf2_ros" type="static_transform_publisher" name="map2odom" args="0 0 0 0 0 0 map odom"/>-->
+</launch>
